@@ -1,5 +1,13 @@
 return {
 	{
+		"rcarriga/nvim-notify",
+		opts = {
+			background_colour = "#000000", -- Set to your background color
+			-- Or use this to make it match your colorscheme:
+			-- background_colour = "Normal",
+		},
+	},
+	{
 		"folke/noice.nvim",
 		event = "VeryLazy",
 		dependencies = {
@@ -11,6 +19,17 @@ return {
 			"rcarriga/nvim-notify",
 		},
 		opts = {
+			views = {
+				notify = {
+					size = {
+						max_width = 50,
+						max_height = 10,
+					},
+					border = {
+						style = "rounded",
+					},
+				},
+			},
 			lsp = {
 				-- Override hover and signature help to make them smaller
 				hover = {
