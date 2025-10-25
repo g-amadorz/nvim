@@ -21,7 +21,7 @@ vim.opt.hlsearch = false
 vim.opt.scrolloff = 4
 vim.opt.signcolumn = "yes"
 vim.opt.foldopen = "mark,percent,quickfix,search,tag,undo"
-vim.opt.sidescrolloff = 8
+vim.opt.sidescrolloff = 50
 vim.api.nvim_set_option("clipboard", "unnamed")
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "c",
@@ -42,9 +42,10 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Code Forces Template
-vim.keymap.set("n", "<leader>cpp", function()
+vim.keymap.set("n", "<leader>cf", function()
 	local template = {
 		'#include "iostream"',
+		"#include <bits/stdc++.h>",
 		"using namespace std;",
 		"void solve() {}",
 		"int main() {",
