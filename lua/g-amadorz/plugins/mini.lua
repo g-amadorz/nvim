@@ -143,25 +143,99 @@ return {
 	},
 
 	{
-		"nvim-mini/mini.visits",
+		"echasnovski/mini.visits",
 		version = "*",
 		config = function()
-			require("mini.visits")
+			local visits = require("mini.visits")
+			visits.setup({
+				-- How to store visits data
+				store = {
+					-- Function to normalize path
+					normalize = nil,
+					-- Whether to autowrite on exit
+					autowrite = true,
+				},
+				-- Silent mode (no notifications)
+				silent = false,
+			})
+
+			-- Keymaps for visiting recent files
+			vim.keymap.set("n", "<leader>vv", function()
+				visits.select_path()
+			end, { desc = "Select recent visit" })
+
+			vim.keymap.set("n", "<leader>vl", function()
+				visits.select_label()
+			end, { desc = "Select by label" })
+
+			-- Add current file to visits
+			vim.keymap.set("n", "<leader>va", function()
+				visits.add_label()
+			end, { desc = "Add visit label" })
+
+			-- Remove current file from visits
+			vim.keymap.set("n", "<leader>vr", function()
+				visits.remove_label()
+			end, { desc = "Remove visit label" })
+
+			-- List all visits for current directory
+			vim.keymap.set("n", "<leader>vc", function()
+				visits.iterate_paths("last", vim.fn.getcwd())
+			end, { desc = "Recent visits (cwd)" })
 		end,
 	},
 	{
-		"nvim-mini/mini.surround",
+		"echasnovski/mini.surround",
 		version = "*",
 		config = function()
-			require("mini.surround")
+			require("mini.surround").setup({
+				-- Module mappings
+				mappings = {
+					add = "sa", -- Add surrounding in Normal and Visual modes
+					delete = "sd", -- Delete surrounding
+					find = "sf", -- Find surrounding (to the right)
+					find_left = "sF", -- Find surrounding (to the left)
+					highlight = "sh", -- Highlight surrounding
+					replace = "sr", -- Replace surrounding
+					update_n_lines = "sn", -- Update `n_lines`
+				},
+
+				-- Number of lines within which surrounding is searched
+				n_lines = 20,
+
+				-- Duration (in ms) of highlight when calling `highlight`
+				highlight_duration = 500,
+
+				-- Pattern to match function name in function call
+				funname_pattern = "[%w_%.]+",
+
+				-- Whether to respect selection type:
+				-- - Place surroundings on separate lines in linewise mode.
+				-- - Place surroundings on each line in blockwise mode.
+				respect_selection_type = true,
+			})
 		end,
 	},
 
 	{
-		"nvim-mini/mini.jump",
+		"echasnovski/mini.jump",
 		version = "*",
 		config = function()
-			require("mini.jump")
+			require("mini.jump").setup({
+
+				mappings = {
+					forward = "f",
+					backward = "F",
+					forward_till = "t",
+					backward_till = "T",
+					repeat_jump = ";",
+				},
+				-- Delay before showing labels
+				delay = {
+					highlight = 250,
+					idle_stop = 10000000,
+				},
+			})
 		end,
 	},
 }

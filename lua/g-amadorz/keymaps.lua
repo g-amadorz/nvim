@@ -18,6 +18,10 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 -- Zen Mode
 vim.keymap.set("n", "<leader>dz", ":ZenMode <CR>", { silent = true })
 
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+vim.keymap.set("n", "<leader>tt", ": split | term", { desc = "Split into terminal window" })
+
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),

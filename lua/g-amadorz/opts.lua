@@ -45,7 +45,6 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.keymap.set("n", "<leader>cf", function()
 	local template = {
 		'#include "iostream"',
-		"#include <bits/stdc++.h>",
 		"using namespace std;",
 		"void solve() {}",
 		"int main() {",
