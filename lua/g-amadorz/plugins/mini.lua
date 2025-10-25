@@ -29,13 +29,13 @@ return {
 				-- Cursor path animation
 				cursor = {
 					enable = true,
-					timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
-				},
-				-- Vertical scroll animation
-				scroll = {
-					enable = true,
 					timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
 				},
+				-- Vertical scroll animation
+				-- scroll = {
+				-- 	enable = true,
+				-- 	timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
+				-- },
 				-- Window resize animation
 				resize = {
 					enable = true,
@@ -115,11 +115,53 @@ return {
 			require("mini.statusline")
 		end,
 	},
+
 	{
-		"nvim-mini/mini.files",
+		"echasnovski/mini.files",
 		version = "*",
 		config = function()
-			require("mini.files")
+			local files = require("mini.files")
+			files.setup({
+				-- Optional configuration
+				windows = {
+					preview = true,
+					width_focus = 100,
+					width_preview = 100,
+				},
+			})
+
+			-- Don't call the function with (), just pass the function reference
+			vim.keymap.set("n", "<leader>pv", function()
+				files.open()
+			end, { desc = "Open file explorer" })
+
+			-- Or open at current file's directory
+			vim.keymap.set("n", "<leader>pV", function()
+				files.open(vim.api.nvim_buf_get_name(0))
+			end, { desc = "Open file explorer at current file" })
+		end,
+	},
+
+	{
+		"nvim-mini/mini.visits",
+		version = "*",
+		config = function()
+			require("mini.visits")
+		end,
+	},
+	{
+		"nvim-mini/mini.surround",
+		version = "*",
+		config = function()
+			require("mini.surround")
+		end,
+	},
+
+	{
+		"nvim-mini/mini.jump",
+		version = "*",
+		config = function()
+			require("mini.jump")
 		end,
 	},
 }
