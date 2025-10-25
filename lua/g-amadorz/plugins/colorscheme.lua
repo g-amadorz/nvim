@@ -1,5 +1,5 @@
 function ColorMyPencils(color)
-	color = color or "vague"
+	color = color or "cyberdream"
 	vim.cmd.colorscheme(color)
 
 	vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
@@ -9,19 +9,11 @@ end
 return {
 	{
 		"folke/tokyonight.nvim",
-		lazy = false,
-		opts = {},
-		config = function()
-			ColorMyPencils()
-		end,
-	},
-	{
-		"folke/tokyonight.nvim",
 		config = function()
 			require("tokyonight").setup({
 				-- your configuration comes here
 				-- or leave it empty to use the default settings
-				style = "moon", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+				style = "storm", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
 				transparent = true, -- Enable this to disable setting the background color
 				terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
 				styles = {
@@ -32,32 +24,12 @@ return {
 					-- Background styles. Can be "dark", "transparent" or "normal"
 					sidebars = "dark", -- style for sidebars, see below
 					floats = "dark", -- style for floating windows
+					ColorMyPencils(),
 				},
 			})
 		end,
 	},
 
-	{
-		"rose-pine/neovim",
-		name = "rose-pine",
-		config = function()
-			require("rose-pine").setup({
-				disable_background = true,
-				styles = {
-					italic = false,
-				},
-			})
-
-			ColorMyPencils()
-		end,
-	},
-
-	{
-		"thesimonho/kanagawa-paper.nvim",
-		lazy = false,
-		priority = 1000,
-		opts = {},
-	},
 	{
 		"armannikoyan/rusty",
 		lazy = false,
@@ -100,4 +72,10 @@ return {
 	},
 
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+
+	{
+		"scottmckendry/cyberdream.nvim",
+		lazy = false,
+		priority = 1000,
+	},
 }
