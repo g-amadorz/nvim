@@ -29,7 +29,7 @@ return {
 				-- Cursor path animation
 				cursor = {
 					enable = true,
-					timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+					timing = animate.gen_timing.linear({ duration = 250, unit = "total" }),
 				},
 				-- Vertical scroll animation
 				-- scroll = {
