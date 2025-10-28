@@ -185,11 +185,6 @@ return {
 		},
 	},
 	{
-		"chentoast/marks.nvim",
-		event = "VeryLazy",
-		opts = {},
-	},
-	{
 		"chomosuke/typst-preview.nvim",
 		lazy = false, -- or ft = 'typst'
 		version = "1.*",
