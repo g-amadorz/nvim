@@ -217,32 +217,11 @@ return {
 	},
 
 	{
-		"echasnovski/mini.jump",
-		version = "*",
-		config = function()
-			require("mini.jump").setup({
-
-				mappings = {
-					forward = "f",
-					backward = "F",
-					forward_till = "t",
-					backward_till = "T",
-					repeat_jump = ";",
-				},
-				-- Delay before showing labels
-				delay = {
-					highlight = 250,
-					idle_stop = 10000000,
-				},
-			})
-		end,
-	},
-
-	{
 		"sphamba/smear-cursor.nvim",
 		event = "VeryLazy",
 		cond = vim.g.neovide == nil,
 		opts = {
+
 			hide_target_hack = true,
 			cursor_color = "none",
 		},
@@ -256,5 +235,31 @@ return {
 				},
 			},
 		},
+	},
+
+	{
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		vscode = true,
+		---@type Flash.Config
+		opts = {},
+  -- stylua: ignore
+  keys = {
+    { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+    { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+    { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+    { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+    { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+    -- Simulate nvim-treesitter incremental selection
+    { "<c-space>", mode = { "n", "o", "x" },
+      function()
+        require("flash").treesitter({
+          actions = {
+            ["<c-space>"] = "next",
+            ["<BS>"] = "prev"
+          }
+        }) 
+      end, desc = "Treesitter Incremental Selection" },
+  },
 	},
 }
