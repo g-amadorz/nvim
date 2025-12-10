@@ -108,14 +108,6 @@ return {
 		end,
 	},
 	{
-		"nvim-mini/mini.statusline",
-		version = "*",
-		config = function()
-			require("mini.statusline")
-		end,
-	},
-
-	{
 		"echasnovski/mini.files",
 		version = "*",
 		config = function()
@@ -217,6 +209,18 @@ return {
 	},
 
 	{
+		"nvim-mini/mini.tabline",
+		version = "*",
+		config = function()
+			require("mini.tabline").setup()
+
+			-- Keymaps for cycling buffers with Ctrl+Tab / Ctrl+Shift+Tab
+			local map = vim.keymap.set
+			local opts = { noremap = true, silent = true }
+		end,
+	},
+
+	{
 		"sphamba/smear-cursor.nvim",
 		event = "VeryLazy",
 		cond = vim.g.neovide == nil,
@@ -258,7 +262,7 @@ return {
             ["<c-space>"] = "next",
             ["<BS>"] = "prev"
           }
-        }) 
+        })
       end, desc = "Treesitter Incremental Selection" },
   },
 	},
