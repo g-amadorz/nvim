@@ -1,8 +1,3 @@
-function ColorMyPencils(color)
-	color = color or "vague"
-	vim.cmd.colorscheme(color)
-end
-
 return {
 	{
 		"folke/tokyonight.nvim",
@@ -18,10 +13,10 @@ return {
 					-- Value is any valid attr-list value for `:help nvim_set_hl`
 					comments = { italic = true },
 					keywords = { italic = true },
+
 					-- Background styles. Can be "dark", "transparent" or "normal"
 					sidebars = "transparent", -- style for sidebars, see below
 					floats = "transparent", -- style for floating windows
-					ColorMyPencils(),
 				},
 			})
 		end,
