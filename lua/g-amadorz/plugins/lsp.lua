@@ -1,198 +1,188 @@
 return {
-	{
-		"neovim/nvim-lspconfig",
-		dependencies = {
-			{
-				"folke/lazydev.nvim",
-				"williamboman/mason.nvim",
-				"williamboman/mason-lspconfig.nvim",
-				"xzbdmw/colorful-menu.nvim",
-				ft = "lua", -- only load on lua files
-				opts = {
-					library = {
-						-- See the configuration section for more details
-						-- Load luvit types when the `vim.uv` word is found
-					},
+	"neovim/nvim-lspconfig",
+	dependencies = {
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
+		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/nvim-cmp",
+	},
+
+	config = function()
+		vim.api.nvim_create_autocmd("LspAttach", {
+			desc = "LSP actions",
+			callback = function(event)
+				local opts = { buffer = event.buf }
+
+				vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+				vim.keymap.set("n", "<leader>k", "<cmd>lua vim.diagnostic.open_float()<cr>", opts)
+				vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
+				vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+				vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+				vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+				vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+				vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+				vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+				vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+			end,
+		})
+
+		-- Mason setup
+		require("mason").setup({
+			ensure_installed = {},
+		})
+
+		-- Mason-lspconfig setup
+		require("mason-lspconfig").setup({
+			handlers = {
+				-- Default handler for automatically configuring installed servers
+				function(server_name)
+					require("lspconfig")[server_name].setup({})
+				end,
+
+				-- You can add custom handlers for specific servers here
+				-- For example:
+				-- tsserver = function(_, opts)
+				--   require("lspconfig").tsserver.setup(opts)
+				-- end,
+			},
+		})
+
+		local cmp = require("cmp")
+
+		--   פּ ﯟ   some other good icons
+		local kind_icons = {
+			Text = "",
+			Method = "",
+			Function = "󰊕",
+			Constructor = "",
+			Field = "",
+			Variable = "",
+			Class = "",
+			Interface = "",
+			Module = "󱒌",
+			Property = "",
+			Unit = "",
+			Value = "",
+			Enum = "",
+			Keyword = "",
+			Snippet = "",
+			Color = "",
+			File = "",
+			Reference = "",
+			Folder = "",
+			EnumMember = "",
+			Constant = "",
+			Struct = "",
+			Event = "",
+			Operator = "",
+			TypeParameter = "",
+		}
+		-- find more here: https://www.nerdfonts.com/cheat-sheet
+
+		local signs = {
+			Error = "󰅚 ",
+			Warn = "󰀪 ",
+			Hint = "󰌶 ",
+			Info = " ",
+		}
+
+		vim.diagnostic.config({
+			virtual_text = false,
+			signs = {
+				text = {
+					[vim.diagnostic.severity.ERROR] = signs.Error,
+					[vim.diagnostic.severity.WARN] = signs.Warn,
+					[vim.diagnostic.severity.HINT] = signs.Hint,
+					[vim.diagnostic.severity.INFO] = signs.Info,
 				},
 			},
-		},
+			underline = true,
+			update_in_insert = false,
+			severity_sort = true,
+			float = {
+				border = "rounded",
+				source = "always",
+			},
+		})
 
-		config = function()
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
-			require("blink.cmp").setup({
+		vim.api.nvim_create_autocmd("CursorHold", {
+			callback = function()
+				local opts = {
+					focusable = false,
+					close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+					border = "rounded",
+					source = "always",
+					prefix = " ",
+				}
+				vim.diagnostic.open_float(nil, opts)
+			end,
+		})
+
+		vim.opt.updatetime = 150
+
+		cmp.setup({
+			sources = {
+				{ name = "nvim_lsp" },
+			},
+
+			window = {
 				completion = {
-					menu = {
-						draw = {
-							-- We don't need label_description now because label and label_description are already
-							-- combined together in label by colorful-menu.nvim.
-							columns = { { "kind_icon" }, { "label", gap = 1 } },
-							components = {
-								label = {
-									text = function(ctx)
-										return require("colorful-menu").blink_components_text(ctx)
-									end,
-									highlight = function(ctx)
-										return require("colorful-menu").blink_components_highlight(ctx)
-									end,
-								},
-							},
-						},
-					},
+					max_height = 10, -- Maximum number of items to show
+					max_width = 50, -- Maximum width of the menu
 				},
-			})
-			require("mason").setup()
-			require("mason-lspconfig").setup({
-				ensure_installed = {
-					"lua_ls",
-					"clangd",
-					"gopls",
-					"rust_analyzer",
-					"jdtls",
-					"ts_ls",
-					"tinymist",
-				},
-			})
+			},
 
-			-- Lua Language Server
-			vim.lsp.config("lua_ls", {
-				capabilities = capabilities,
-				settings = {
-					Lua = {
-						diagnostics = {
-							globals = { "vim" },
-						},
-						workspace = {
-							library = vim.api.nvim_get_runtime_file("", true),
-						},
-						telemetry = {
-							enable = false,
-						},
-					},
-				},
-			})
+			mapping = {
+				["<C-p>"] = cmp.mapping.select_prev_item(),
+				["<C-n>"] = cmp.mapping.select_next_item(),
+				["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
+				["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
+				["<C-k>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+				["<C-y>"] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+				["<C-e>"] = cmp.mapping({
+					i = cmp.mapping.abort(),
+					c = cmp.mapping.close(),
+				}),
+				-- Accept currently selected item. If none selected, `select` first item.
+				-- Set `select` to `false` to only confirm explicitly selected items.
+				["<Tab>"] = cmp.mapping.confirm({ select = false }),
+				["<CR>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_next_item()
+					else
+						fallback()
+					end
+				end, {
+					"i",
+					"s",
+				}),
+				["<S-CR>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_prev_item()
+					else
+						fallback()
+					end
+				end, {
+					"i",
+					"s",
+				}),
+			},
 
-			-- Clangd (C/C++)
-			vim.lsp.config("clangd", {
-				capabilities = capabilities,
-				cmd = {
-					"clangd",
-					"--background-index",
-					"--clang-tidy",
-					"--header-insertion=iwyu",
-					"--completion-style=detailed",
-					"--function-arg-placeholders",
-					"--fallback-style=llvm",
-				},
-			})
-
-			-- Go Language Server
-			vim.lsp.config("gopls", {
-				capabilities = capabilities,
-				settings = {
-					gopls = {
-						analyses = {
-							unusedparams = true,
-						},
-						staticcheck = true,
-						gofumpt = true,
-					},
-				},
-			})
-
-			-- Rust Analyzer
-			vim.lsp.config("rust_analyzer", {
-				capabilities = capabilities,
-				settings = {
-					["rust-analyzer"] = {
-						check = {
-							command = "clippy",
-							extraArgs = { "--all", "--", "-W", "clippy::all" },
-						},
-						diagnostics = {
-							enable = true,
-							experimental = {
-								enable = true,
-							},
-						},
-						cargo = {
-							allFeatures = true,
-						},
-					},
-				},
-			})
-
-			-- Typst
-			vim.lsp.config("tinymist", {
-				capabilities = capabilities,
-				settings = {
-					formatterMode = "typstyle",
-					exportPdf = "onType",
-					semanticTokens = "disable",
-				},
-			})
-
-			-- TypeScript
-			vim.lsp.config("ts_ls", {
-				capabilities = capabilities,
-				settings = {
-					typescript = {
-						inlayHints = {
-							includeInlayParameterNameHints = "all",
-							includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-							includeInlayFunctionParameterTypeHints = true,
-							includeInlayVariableTypeHints = true,
-							includeInlayPropertyDeclarationTypeHints = true,
-							includeInlayFunctionLikeReturnTypeHints = true,
-							includeInlayEnumMemberValueHints = true,
-						},
-					},
-					javascript = {
-						inlayHints = {
-							includeInlayParameterNameHints = "all",
-							includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-							includeInlayFunctionParameterTypeHints = true,
-							includeInlayVariableTypeHints = true,
-							includeInlayPropertyDeclarationTypeHints = true,
-							includeInlayFunctionLikeReturnTypeHints = true,
-							includeInlayEnumMemberValueHints = true,
-						},
-					},
-				},
-			})
-
-			-- Enable the LSP servers
-			vim.lsp.enable("lua_ls")
-			vim.lsp.enable("clangd")
-			vim.lsp.enable("gopls")
-			vim.lsp.enable("rust_analyzer")
-			vim.lsp.enable("tinymist")
-			vim.lsp.enable("ts_ls")
-		end,
-	},
-	{
-		"rachartier/tiny-inline-diagnostic.nvim",
-		event = "VeryLazy", -- Or `LspAttach`
-		priority = 1000, -- needs to be loaded in first
-		config = function()
-			require("tiny-inline-diagnostic").setup()
-			vim.diagnostic.config({ virtual_text = false }) -- Only if needed in your configuration, if you already have native LSP diagnostics
-		end,
-	},
-	{
-		"j-hui/fidget.nvim",
-		opts = {
-			-- options
-		},
-	},
-	{
-		"chomosuke/typst-preview.nvim",
-		lazy = false, -- or ft = 'typst'
-		version = "1.*",
-		opts = {}, -- lazy.nvim will implicitly calls `setup {}`
-	},
-
-	-- {
-	-- 	"Exafunction/windsurf.vim",
-	-- 	event = "BufEnter",
-	-- },
+			formatting = {
+				fields = { "kind", "abbr", "menu" },
+				format = function(entry, vim_item)
+					-- Kind icons
+					vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+					-- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+					vim_item.menu = ({
+						nvim_lsp = "[LSP]",
+						--nvim_lsp_signature_help = "[LSP-Signature]",
+						buffer = "[Buffer]",
+						path = "[Path]",
+					})[entry.source.name]
+					return vim_item
+				end,
+			},
+		})
+	end,
 }
