@@ -208,17 +208,17 @@ return {
 		end,
 	},
 
-	{
-		"nvim-mini/mini.tabline",
-		version = "*",
-		config = function()
-			require("mini.tabline").setup()
-
-			-- Keymaps for cycling buffers with Ctrl+Tab / Ctrl+Shift+Tab
-			local map = vim.keymap.set
-			local opts = { noremap = true, silent = true }
-		end,
-	},
+	-- {
+	-- 	"nvim-mini/mini.tabline",
+	-- 	version = "*",
+	-- 	config = function()
+	-- 		require("mini.tabline").setup()
+	--
+	-- 		-- Keymaps for cycling buffers with Ctrl+Tab / Ctrl+Shift+Tab
+	-- 		local map = vim.keymap.set
+	-- 		local opts = { noremap = true, silent = true }
+	-- 	end,
+	-- },
 
 	{
 		"folke/flash.nvim",

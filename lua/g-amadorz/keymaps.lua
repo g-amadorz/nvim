@@ -19,11 +19,20 @@ vim.keymap.set("x", "Y", '"+y', { silent = true })
 
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
-vim.keymap.set("n", "<leader>tt", ": split | term <CR>", { desc = "Split into terminal window" })
+-- vim.keymap.set("n", "<leader>tt", ": split | term <CR>", { desc = "Split into terminal window" })
+
+vim.keymap.set("n", "<leader>tt", ":vimgrep ", { desc = "Split into terminal window" })
 
 vim.keymap.set("n", "<C-l>", ":bnext <CR>", { desc = "Move to next buf" })
 
 vim.keymap.set("n", "<C-h>", ":bprevious <CR>", { desc = "Move to prev buf" })
+
+vim.keymap.set("n", "<leader>vg", function()
+	vim.fn.feedkeys(
+		":vimgrep // **/*" .. string.rep(vim.api.nvim_replace_termcodes("<Left>", true, false, true), 6),
+		"n"
+	)
+end)
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",

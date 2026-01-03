@@ -26,6 +26,7 @@ return {
 			end,
 		})
 
+
 		-- Mason setup
 		require("mason").setup({
 			ensure_installed = {},
@@ -118,7 +119,7 @@ return {
 			end,
 		})
 
-		vim.opt.updatetime = 150
+		vim.opt.updatetime = 500
 
 		cmp.setup({
 			sources = {
@@ -131,6 +132,7 @@ return {
 					max_width = 50, -- Maximum width of the menu
 				},
 			},
+
 
 			mapping = {
 				["<C-p>"] = cmp.mapping.select_prev_item(),
